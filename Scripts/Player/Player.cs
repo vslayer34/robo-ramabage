@@ -13,7 +13,12 @@ public partial class Player : CharacterBody3D
 	[ExportCategory("")]
 
 	public const float Speed = 5.0f;
-	public const float JumpVelocity = 4.5f;
+
+	[Export]
+	private float _jumpHieght = 1.0f;
+
+	[Export]
+	private float _fallMultiplier = 2.0f;
 
 	private Vector2 _mouseDirection;
 
@@ -35,13 +40,22 @@ public partial class Player : CharacterBody3D
 		// Add the gravity.
 		if (!IsOnFloor())
 		{
-			velocity += GetGravity() * (float)delta;
+			// See if the player is falling or jumping (make sure the player fall more quickly)
+
+			if (velocity.Y >= 0.0f)
+			{
+				velocity += GetGravity() * (float)delta;
+			}
+			else
+			{
+				velocity += GetGravity() * _fallMultiplier * (float)delta;
+			}
 		}
 
 		// Handle Jump.
 		if (Input.IsActionJustPressed(InputActionName.JUMP) && IsOnFloor())
 		{
-			velocity.Y = JumpVelocity;
+			velocity.Y = Mathf.Sqrt(2.0f * _jumpHieght * -GetGravity().Y);
 		}
 
 		// Get the input direction and handle the movement/deceleration.
