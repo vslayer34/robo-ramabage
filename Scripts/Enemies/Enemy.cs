@@ -15,19 +15,31 @@ public partial class Enemy : CharacterBody3D
 	public const float Speed = 5.0f;
 	public const float JumpVelocity = 4.5f;
 
+	private bool _isTriggered;
+
+	[Export]
+	private float _aggroDistance = 12.0f;
+
 
 
     // Game Loop Methods---------------------------------------------------------------------------
 
-    public override void _Ready()
-    {
+	public override void _Ready()
+	{
 		_playerNode = GetTree().GetFirstNodeInGroup(GroupNames.PLAYER) as Player.Player;
+	}
+
+    public override void _Process(double delta)
+    {
+        _navAgent.TargetPosition = _playerNode.GlobalPosition;
     }
+
 
 	public override void _PhysicsProcess(double delta)
 	{
-		_navAgent.TargetPosition = _playerNode.GlobalPosition;
-		_navAgent.GetNextPathPosition();
+		_isTriggered = GlobalPosition.DistanceTo(_playerNode.GlobalPosition) <= _aggroDistance;
+
+		var nextPosition = _navAgent.GetNextPathPosition();
 		Vector3 velocity = Velocity;
 
 		// Add the gravity.
@@ -36,16 +48,9 @@ public partial class Enemy : CharacterBody3D
 			velocity += GetGravity() * (float)delta;
 		}
 
-		// Handle Jump.
-		if (Input.IsActionJustPressed("ui_accept") && IsOnFloor())
-		{
-			velocity.Y = JumpVelocity;
-		}
+		Vector3 direction = _isTriggered ? GlobalPosition.DirectionTo(nextPosition) : Vector3.Zero;
 
-		// Get the input direction and handle the movement/deceleration.
-		// As good practice, you should replace UI actions with custom gameplay actions.
-		Vector2 inputDir = Input.GetVector("ui_left", "ui_right", "ui_up", "ui_down");
-		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
+
 		if (direction != Vector3.Zero)
 		{
 			velocity.X = direction.X * Speed;
@@ -58,6 +63,6 @@ public partial class Enemy : CharacterBody3D
 		}
 
 		Velocity = velocity;
-		// MoveAndSlide();
+		MoveAndSlide();
 	}
 }
