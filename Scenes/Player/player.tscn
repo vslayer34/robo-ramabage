@@ -8,7 +8,7 @@
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_tugb3"]
 
-[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_cameraPivot")]
+[node name="Player" type="CharacterBody3D" node_paths=PackedStringArray("_cameraPivot") groups=["playeer"]]
 script = ExtResource("1_uvnfx")
 _cameraPivot = NodePath("CameraPivot")
 
