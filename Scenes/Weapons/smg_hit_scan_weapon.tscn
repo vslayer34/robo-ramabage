@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bko1tb1a20sv5"]
+
+[ext_resource type="PackedScene" uid="uid://uyei8gtunc4i" path="res://Scenes/Weapons/hit_scan_weapon.tscn" id="1_ttf8e"]
+[ext_resource type="PackedScene" uid="uid://bbwk61lgso3c3" path="res://Assets/Models/SMG.glb" id="2_dy26j"]
+
+[node name="SMGHitScanWeapon" instance=ExtResource("1_ttf8e")]
+fireRatePerSecond = 14.0
+
+[node name="SMG" parent="." index="1" instance=ExtResource("2_dy26j")]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.54, -0.28, -0.6)
