@@ -4,6 +4,7 @@ using RoboRampage.Helper.Input;
 
 
 namespace RoboRampage.Player;
+
 public partial class Player : CharacterBody3D
 {
 	[ExportCategory("Required Nodes")]
@@ -22,14 +23,38 @@ public partial class Player : CharacterBody3D
 
 	private Vector2 _mouseDirection;
 
+	private float _maxHealth = 100.0f;
+
+	private float _currentHealth;
 
 
-    // Game Loop Methods---------------------------------------------------------------------------
 
-    public override void _Ready()
-    {
-        Input.MouseMode = Input.MouseModeEnum.Captured;
-    }
+	// Getters & Setters---------------------------------------------------------------------------
+
+	private float Health
+	{
+		get => _currentHealth;
+
+		set
+		{
+			if (value <= 0.0f)
+			{
+				_currentHealth = 0.0f;
+				GetTree().Quit();
+				return;
+			}
+
+			_currentHealth = value;
+		}
+	}
+
+	// Game Loop Methods---------------------------------------------------------------------------
+
+	public override void _Ready()
+	{
+		_currentHealth = _maxHealth;
+		Input.MouseMode = Input.MouseModeEnum.Captured;
+	}
 
 	public override void _PhysicsProcess(double delta)
 	{
@@ -62,7 +87,7 @@ public partial class Player : CharacterBody3D
 		// As good practice, you should replace UI actions with custom gameplay actions.
 		Vector2 inputDir = Input.GetVector(InputActionName.MOVE_LEFT, InputActionName.MOVE_RIGHT, InputActionName.MOVE_FORWARD, InputActionName.MOVE_BACK);
 		Vector3 direction = (Transform.Basis * new Vector3(inputDir.X, 0, inputDir.Y)).Normalized();
-		
+
 		if (direction != Vector3.Zero)
 		{
 			velocity.X = direction.X * Speed;
@@ -78,13 +103,13 @@ public partial class Player : CharacterBody3D
 		MoveAndSlide();
 	}
 
-    public override void _Input(InputEvent @event)
-    {
-        if (@event is InputEventMouseMotion mouse && Input.MouseMode.Equals(Input.MouseModeEnum.Captured))
+	public override void _Input(InputEvent @event)
+	{
+		if (@event is InputEventMouseMotion mouse && Input.MouseMode.Equals(Input.MouseModeEnum.Captured))
 		{
 			_mouseDirection = -mouse.Relative * 0.001f;
 		}
-		
+
 		if (@event.IsActionPressed(InputActionName.ESCAPE) && Input.MouseMode.Equals(Input.MouseModeEnum.Captured))
 		{
 			Input.MouseMode = Input.MouseModeEnum.Visible;
@@ -93,7 +118,7 @@ public partial class Player : CharacterBody3D
 		{
 			Input.MouseMode = Input.MouseModeEnum.Captured;
 		}
-    }
+	}
 
 
 	// Member Methods------------------------------------------------------------------------------
@@ -106,5 +131,10 @@ public partial class Player : CharacterBody3D
 			new Vector3(-90.0f, _cameraPivot.RotationDegrees.Y, _cameraPivot.RotationDegrees.Z),
 			new Vector3(90.0f, _cameraPivot.RotationDegrees.Y, _cameraPivot.RotationDegrees.Z));
 		_mouseDirection = Vector2.Zero;
+	}
+
+	public void TakeDamage(float amount)
+	{
+		Health -= amount;
 	}
 }

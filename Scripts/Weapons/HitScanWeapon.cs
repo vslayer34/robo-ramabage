@@ -1,4 +1,5 @@
 using Godot;
+using RoboRampage.Enemies;
 using RoboRampage.Helper.Input;
 using System;
 
@@ -20,6 +21,9 @@ public partial class HitScanWeapon : Node3D
 
 	[Export]
 	private RayCast3D _rayCaster;
+
+	[Export]
+	private float _damage;
 
 
 
@@ -49,7 +53,12 @@ public partial class HitScanWeapon : Node3D
 	{
 		_coolDownTimer.Start(1.0f / fireRatePerSecond);
 		GD.Print("shot fired");
-		GD.Print(_rayCaster.GetCollider());
+		var target = _rayCaster.GetCollider();
+
+		if (target is Enemy enemy)
+		{
+			enemy.TakeDamage(_damage);
+		}
 
 		Vector3 currentWeaponPosition = _weaponMesh.Position;
 		currentWeaponPosition.Z += _backwardRecoilForce;

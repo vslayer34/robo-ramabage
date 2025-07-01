@@ -16,6 +16,9 @@ public partial class Enemy : CharacterBody3D
 
 	private Player.Player _playerNode;
 
+	[Export]
+	private float _maxHealth;
+
 	public const float Speed = 5.0f;
 	public const float JumpVelocity = 4.5f;
 
@@ -27,12 +30,40 @@ public partial class Enemy : CharacterBody3D
 	[Export]
 	private float _attackRange = 1.5f;
 
+	[Export]
+	private float _damageDealt = 20.0f;
+
+	private float _hitPoints;
+
+	private bool _isHit;
+
+	// Getters & Setters--------------------------------------------------------------------------
+
+	private float HitPoints
+	{
+		get => _hitPoints;
+
+		set
+		{
+			if (value <= 0.0f)
+			{
+				_hitPoints = 0.0f;
+				QueueFree();
+			}
+			else
+			{
+				_hitPoints = value;
+			}
+		}
+	}
+
 
 
 	// Game Loop Methods---------------------------------------------------------------------------
 
 	public override void _Ready()
 	{
+		HitPoints = _maxHealth;
 		_playerNode = GetTree().GetFirstNodeInGroup(GroupNames.PLAYER) as Player.Player;
 	}
 
@@ -46,7 +77,7 @@ public partial class Enemy : CharacterBody3D
 	{
 		var _distanceToPlayer = GlobalPosition.DistanceTo(_playerNode.GlobalPosition);
 
-		_isTriggered = _distanceToPlayer <= _aggroDistance;
+		_isTriggered = _distanceToPlayer <= _aggroDistance || _isHit;
 
 
 		var nextPosition = _navAgent.GetNextPathPosition();
@@ -82,6 +113,15 @@ public partial class Enemy : CharacterBody3D
 		MoveAndSlide();
 	}
 
+	// Game Loop Methods---------------------------------------------------------------------------
+
+	public void TakeDamage(float amount)
+	{
+		_isHit = true;
+		HitPoints -= amount;
+
+		GD.Print(HitPoints);
+	}
 
 	private void LookTowardDestination(Vector3 direction)
 	{
@@ -95,6 +135,6 @@ public partial class Enemy : CharacterBody3D
 
 	private void Attack()
 	{
-		GD.Print("Attack Player");
+		_playerNode.TakeDamage(_damageDealt);
 	}
 }
