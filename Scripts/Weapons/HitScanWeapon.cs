@@ -15,6 +15,12 @@ public partial class HitScanWeapon : Node3D
 	private Node3D _weaponMesh;
 
 	[Export]
+	private GpuParticles3D _muzzleFlashVFX;
+
+	[Export]
+	private PackedScene _sparksScene;
+
+	[Export]
 	private float _backwardRecoilForce = 0.05f;
 
 	private Vector3 _defaultMeshPosition;
@@ -51,6 +57,7 @@ public partial class HitScanWeapon : Node3D
 
 	private void Shoot()
 	{
+		_muzzleFlashVFX.Restart();
 		_coolDownTimer.Start(1.0f / fireRatePerSecond);
 		GD.Print("shot fired");
 		var target = _rayCaster.GetCollider();
@@ -62,7 +69,12 @@ public partial class HitScanWeapon : Node3D
 
 		Vector3 currentWeaponPosition = _weaponMesh.Position;
 		currentWeaponPosition.Z += _backwardRecoilForce;
-		
+
 		_weaponMesh.Position = currentWeaponPosition;
+
+		var sparks = _sparksScene.Instantiate() as Node3D;
+		AddChild(sparks);
+
+		sparks.GlobalPosition = _rayCaster.GetCollisionPoint();
 	}
 }

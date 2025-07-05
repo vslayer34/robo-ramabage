@@ -1,11 +1,38 @@
-[gd_scene load_steps=3 format=3 uid="uid://bko1tb1a20sv5"]
+[gd_scene load_steps=9 format=3 uid="uid://bko1tb1a20sv5"]
 
 [ext_resource type="PackedScene" uid="uid://uyei8gtunc4i" path="res://Scenes/Weapons/hit_scan_weapon.tscn" id="1_ttf8e"]
+[ext_resource type="PackedScene" uid="uid://5c62b2a4au1l" path="res://Scenes/VFX/sparks_vfx.tscn" id="2_6gdyk"]
 [ext_resource type="PackedScene" uid="uid://bbwk61lgso3c3" path="res://Assets/Models/SMG.glb" id="2_dy26j"]
 
-[node name="SMGHitScanWeapon" node_paths=PackedStringArray("_weaponMesh", "_rayCaster") instance=ExtResource("1_ttf8e")]
+[sub_resource type="Curve" id="Curve_dy26j"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_6gdyk"]
+curve = SubResource("Curve_dy26j")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_dy26j"]
+direction = Vector3(0, 0, -1)
+spread = 90.0
+initial_velocity_min = 3.0
+initial_velocity_max = 4.0
+gravity = Vector3(0, 0, 0)
+scale_curve = SubResource("CurveTexture_6gdyk")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dy26j"]
+emission_enabled = true
+emission = Color(1, 1, 1, 1)
+emission_energy_multiplier = 3.0
+
+[sub_resource type="BoxMesh" id="BoxMesh_6gdyk"]
+material = SubResource("StandardMaterial3D_dy26j")
+size = Vector3(0.05, 0.05, 0.05)
+
+[node name="SMGHitScanWeapon" node_paths=PackedStringArray("_weaponMesh", "_muzzleFlashVFX", "_rayCaster") instance=ExtResource("1_ttf8e")]
 fireRatePerSecond = 14.0
 _weaponMesh = NodePath("SMG")
+_muzzleFlashVFX = NodePath("MuzzleFlash")
+_sparksScene = ExtResource("2_6gdyk")
 _rayCaster = NodePath("RayCast3D")
 _damage = 15.0
 
@@ -14,3 +41,15 @@ transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0.54, -0.28, -0.6)
 
 [node name="RayCast3D" type="RayCast3D" parent="." index="2"]
 target_position = Vector3(0, 0, -100)
+
+[node name="MuzzleFlash" type="GPUParticles3D" parent="." index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.535474, -0.260865, -1.17948)
+cast_shadow = 0
+emitting = false
+amount = 16
+lifetime = 0.01
+one_shot = true
+explosiveness = 1.0
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_dy26j")
+draw_pass_1 = SubResource("BoxMesh_6gdyk")
