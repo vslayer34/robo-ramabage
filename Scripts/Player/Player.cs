@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using RoboRampage.Helper.Input;
+using RoboRamabage.Scripts.Helper.Animations;
 
 
 namespace RoboRampage.Player;
@@ -10,6 +11,9 @@ public partial class Player : CharacterBody3D
 	[ExportCategory("Required Nodes")]
 	[Export]
 	private Node3D _cameraPivot;
+
+	[Export]
+	private AnimationPlayer _damageScreenAnim;
 
 	[ExportCategory("")]
 
@@ -42,6 +46,14 @@ public partial class Player : CharacterBody3D
 				_currentHealth = 0.0f;
 				GetTree().Quit();
 				return;
+			}
+			else
+			{
+				if (value < _currentHealth)
+				{
+					// _damageScreenAnim.Stop(false);
+					_damageScreenAnim.Play(AnimationNames.Player.DISPLAY_DAMAGE);
+				}
 			}
 
 			_currentHealth = value;
