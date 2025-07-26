@@ -1,0 +1,54 @@
+[gd_scene load_steps=7 format=3 uid="uid://83ebi57jsxh6"]
+
+[ext_resource type="FontFile" uid="uid://br851oppnbtiw" path="res://Assets/UI/Fonts/Staatliches-Regular.ttf" id="1_xqyep"]
+[ext_resource type="Script" uid="uid://d2rp5c0esr0ry" path="res://Scripts/UI/Gameover Menu/GameOverMenu.cs" id="2_7hu81"]
+[ext_resource type="Script" uid="uid://cgd3jhsl20dj5" path="res://Scripts/UI/Gameover Menu/RetryButton.cs" id="3_knywt"]
+[ext_resource type="Script" uid="uid://8j8fw1k8y2aq" path="res://Scripts/UI/Gameover Menu/QuitButton.cs" id="4_inpvy"]
+
+[sub_resource type="Theme" id="Theme_7hu81"]
+default_font = ExtResource("1_xqyep")
+default_font_size = 64
+
+[sub_resource type="LabelSettings" id="LabelSettings_xqyep"]
+font_size = 96
+
+[node name="GameOverMenu" type="Control"]
+process_mode = 3
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme_7hu81")
+script = ExtResource("2_7hu81")
+
+[node name="CenterContainer" type="CenterContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer"]
+custom_minimum_size = Vector2(512, 0)
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Game Over"
+label_settings = SubResource("LabelSettings_xqyep")
+horizontal_alignment = 1
+
+[node name="RetryButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "Again
+"
+script = ExtResource("3_knywt")
+
+[node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer"]
+layout_mode = 2
+text = "I'm Done
+"
+script = ExtResource("4_inpvy")

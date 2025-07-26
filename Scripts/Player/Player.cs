@@ -44,7 +44,7 @@ public partial class Player : CharacterBody3D
 			if (value <= 0.0f)
 			{
 				_currentHealth = 0.0f;
-				GetTree().Quit();
+				LevelManager.Instance.StartPlayerDeadSequence();
 				return;
 			}
 			else
